@@ -7,6 +7,7 @@ from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import CruiseButtons, CAR, VISUAL_HUD, HONDA_BOSCH, CarControllerParams
 from opendbc.can.packer import CANPacker
+from selfdrive.config import Conversions as CV
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -73,6 +74,30 @@ def process_hud_alert(hud_alert):
 HUDData = namedtuple("HUDData",
                      ["pcm_accel", "v_cruise",  "car",
                      "lanes", "fcw", "acc_alert", "steer_required"])
+
+
+MIN_ACC_SPEED = 19 * CV.MPH_TO_MS
+def coast_accel(speed: float) -> float:  # given a speed, output coasting acceleration
+  points = [[0.01, 0.0], [.21, .425], [.3107, .535], [.431, .555],
+            [.777, .438], [1.928, 0.265], [2.66, -0.179],
+            [3.336, -0.250], [MIN_ACC_SPEED, -0.145]]
+  return interp(speed, *zip(*points))
+
+
+def compute_gb_pedal(accel: float, speed: float) -> float:
+  def accel_to_gas(_a_ego, _v_ego):
+    c1, c2, c3, c4, c5, c6 = [-0.0018705298984563084, 0.02114654769128651, 0.013097655866657579, 0.001969107781263706, -0.00572634369922001, 0.10785843778190311]
+    _gas = (c4 * _v_ego ** 2 + c5 * _v_ego + c6) * _a_ego
+    _gas_offset = c1 * _v_ego ** 2 + c2 * _v_ego + c3
+    return _gas + _gas_offset
+
+  gas = 0.
+  coast = coast_accel(speed)
+  coast_tolerance = 0.0
+
+  if accel > coast - coast_tolerance:
+    gas = accel_to_gas(accel, speed)
+  return gas
 
 
 class CarController():
@@ -165,7 +190,8 @@ class CarController():
         if CS.CP.carFingerprint in HONDA_BOSCH:
           pass # TODO: implement
         else:
-          apply_gas = clip(actuators.gas, 0., 1.)
+          apply_gas = compute_gb_pedal((actuators.gas - actuators.brake) * 3., CS.out.vEgo)
+          apply_gas = clip(apply_gas, 0., 1.)
           apply_brake = int(clip(self.brake_last * P.BRAKE_MAX, 0, P.BRAKE_MAX - 1))
           pump_on, self.last_pump_ts = brake_pump_hysteresis(apply_brake, self.apply_brake_last, self.last_pump_ts, ts)
           can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
