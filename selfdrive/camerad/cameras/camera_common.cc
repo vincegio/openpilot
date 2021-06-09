@@ -298,7 +298,7 @@ float set_exposure_target(const CameraBuf *b, int x_start, int x_end, int x_skip
     lum_cur += lum_binning[lum_med];
     if (hl_weighted) {
       int lum_med_tmp = 0;
-      int hb = HLC_THRESH + (10 - analog_gain);
+      int hb = HLC_THRESH - (10*analog_gain/8);
       if (lum_cur > 0 && lum_med > hb) {
         lum_med_tmp = (lum_med - hb) + 100;
       }

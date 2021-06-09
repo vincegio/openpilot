@@ -34,7 +34,7 @@
 #define LOG_CAMERA_ID_QCAMERA 3
 #define LOG_CAMERA_ID_MAX 4
 
-#define HLC_THRESH 222
+#define HLC_THRESH 232
 #define HLC_A 80
 #define HISTO_CEIL_K 5
 
