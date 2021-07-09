@@ -73,6 +73,12 @@ function two_init {
 
   # *** misc setup ***
 
+  # set IO scheduler
+  setprop sys.io.scheduler noop
+  for f in /sys/block/*/queue/scheduler; do
+    echo noop > $f
+  done
+
   # wifi scan
   wpa_cli IFNAME=wlan0 SCAN
 
@@ -81,9 +87,6 @@ function two_init {
 
   # disable bluetooth
   service call bluetooth_manager 8
-
-  # set IO scheduler
-  setprop sys.io.scheduler noop
 
   # Check for NEOS update
   if [ $(< /VERSION) != "$REQUIRED_NEOS_VERSION" ]; then
