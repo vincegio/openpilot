@@ -20,9 +20,6 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   main_layout->setMargin(0);
   main_layout->setSpacing(0);
 
-  home = new OffroadHome();
-  slayout->addWidget(home);
-
   sidebar = new Sidebar(this);
   main_layout->addWidget(sidebar);
   QObject::connect(this, &HomeWindow::update, sidebar, &Sidebar::updateState);
@@ -30,6 +27,9 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
 
   slayout = new QStackedLayout();
   main_layout->addLayout(slayout);
+
+  home = new OffroadHome();
+  slayout->addWidget(home);
 
   onroad = new OnroadWindow(this);
   slayout->addWidget(onroad);
