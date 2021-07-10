@@ -44,8 +44,8 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   });
   slayout->addWidget(driver_view);
 
-  showDriverView(true);
-  showDriverView(false);
+  // fixes unclickable finish setup button
+  slayout->setCurrentWidget(home);
 }
 
 void HomeWindow::showSidebar(bool show) {
@@ -63,7 +63,6 @@ void HomeWindow::offroadTransition(bool offroad) {
 }
 
 void HomeWindow::showDriverView(bool show) {
-  qDebug() << "SHOW DRIVER VIEW:" << show;
   if (show) {
     emit closeSettings();
     slayout->setCurrentWidget(driver_view);
