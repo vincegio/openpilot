@@ -5,7 +5,6 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
-#include <iostream>
 
 #include "selfdrive/common/swaglog.h"
 #include "selfdrive/common/util.h"
@@ -306,7 +305,6 @@ QUIState::QUIState(QObject *parent) : QObject(parent) {
 void QUIState::update() {
   update_params(&ui_state);
   update_sockets(&ui_state);
-  std::cout << "ui_state.scene.started: " << ui_state.scene.started << "\n";
   update_state(&ui_state);
   update_status(&ui_state);
   update_vision(&ui_state);
