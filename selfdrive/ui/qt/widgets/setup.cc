@@ -236,7 +236,6 @@ void SetupWidget::parseError(const QString &response) {
 }
 
 void SetupWidget::showQrCode() {
-  qDebug() << "Finish button released!";
   showQr = true;
   mainLayout->setCurrentIndex(1);
 }
@@ -250,7 +249,7 @@ void SetupWidget::replyFinished(const QString &response) {
   }
 
   QJsonObject json = doc.object();
-  bool is_paired = false;  // json["is_paired"].toBool();
+  bool is_paired = json["is_paired"].toBool();
   bool is_prime = json["prime"].toBool();
 
   if (!is_paired) {
