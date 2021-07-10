@@ -20,6 +20,9 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   main_layout->setMargin(0);
   main_layout->setSpacing(0);
 
+  home = new OffroadHome();
+  slayout->addWidget(home);
+
   sidebar = new Sidebar(this);
   main_layout->addWidget(sidebar);
   QObject::connect(this, &HomeWindow::update, sidebar, &Sidebar::updateState);
@@ -34,17 +37,11 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   QObject::connect(this, &HomeWindow::update, onroad, &OnroadWindow::update);
   QObject::connect(this, &HomeWindow::offroadTransitionSignal, onroad, &OnroadWindow::offroadTransitionSignal);
 
-  home = new OffroadHome();
-  slayout->addWidget(home);
-
   driver_view = new DriverViewWindow(this);
   connect(driver_view, &DriverViewWindow::done, [=] {
     showDriverView(false);
   });
   slayout->addWidget(driver_view);
-
-  // fixes unclickable finish setup button
-  slayout->setCurrentWidget(home);
 }
 
 void HomeWindow::showSidebar(bool show) {
