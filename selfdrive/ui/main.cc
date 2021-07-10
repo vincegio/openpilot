@@ -7,8 +7,8 @@
 #include "selfdrive/ui/qt/window.h"
 
 int main(int argc, char *argv[]) {
+  qInstallMessageHandler(swagLogMessageHandler);
   initApp();
-  setQtSurfaceFormat();
 
   if (Hardware::EON()) {
     QSslConfiguration ssl = QSslConfiguration::defaultConfiguration();
