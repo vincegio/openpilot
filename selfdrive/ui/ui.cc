@@ -311,7 +311,8 @@ void QUIState::update() {
 
   if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
     started_prev = ui_state.scene.started;
-    emit offroadTransition(!ui_state.scene.started);
+    emit offroadTransition(false);
+//    emit offroadTransition(!ui_state.scene.started);
 
     // Change timeout to 0 when onroad, this will call update continously.
     // This puts visionIPC in charge of update frequency, reducing video latency
