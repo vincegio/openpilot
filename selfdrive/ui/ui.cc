@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <iostream>
 
 #include "selfdrive/common/swaglog.h"
 #include "selfdrive/common/util.h"
@@ -305,14 +306,14 @@ QUIState::QUIState(QObject *parent) : QObject(parent) {
 void QUIState::update() {
   update_params(&ui_state);
   update_sockets(&ui_state);
+  std::cout << "ui_state.scene.started: " << ui_state.scene.started << "\n";
   update_state(&ui_state);
   update_status(&ui_state);
   update_vision(&ui_state);
 
   if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
     started_prev = ui_state.scene.started;
-    emit offroadTransition(false);
-//    emit offroadTransition(!ui_state.scene.started);
+    emit offroadTransition(!ui_state.scene.started);
 
     // Change timeout to 0 when onroad, this will call update continously.
     // This puts visionIPC in charge of update frequency, reducing video latency
