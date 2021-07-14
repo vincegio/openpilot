@@ -62,8 +62,8 @@ commit = get_git_commit()
 
 if (origin is not None) and (branch is not None):
   try:
-    comma_remote = origin.startswith('git@github.com:commaai') or origin.startswith('https://github.com/commaai')
-    tested_branch = get_git_branch() in TESTED_BRANCHES
+    comma_remote = True
+    tested_branch = True
 
     dirty = False
 
